@@ -35,12 +35,15 @@ MT1-LABEXAM/
     │   ├── 03_http_get_about.png
     │   ├── 04_http_get_home_fs.png
     │   └── 05_http_invalid_route_404.png
-    └── Part-B/
-        ├── 01_echoapi_get_all_tasks.jpg
-        ├── 02_echoapi_get_task_by_id.jpg
-        ├── 03_echoapi_post_task.jpg
-        ├── 04_echoapi_put_task.jpg
-        └── 05_echoapi_delete_task.jpg
+    ├── Part-B/
+    │   ├── 01_echoapi_get_all_tasks.jpg
+    │   ├── 02_echoapi_get_task_by_id.jpg
+    │   ├── 03_echoapi_post_task.jpg
+    │   ├── 04_echoapi_put_task.jpg
+    │   └── 05_echoapi_delete_task.jpg
+    └── server_and_terminal/
+        ├── http_server_running.png
+        └── express_server_running.png
 ```
 
 ---
