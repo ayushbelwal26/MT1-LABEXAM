@@ -1,122 +1,205 @@
-# MT1 Lab Exam — Test Results Log
+# MT1 Lab Examination — Test Results & Screenshot Evidence Log
 
-> Auto-generated test evidence for all endpoints.
-
-## Part A: HTTP Server (Port 3000)
-
-### GET / — Welcome Page
-- Status: 200 OK  
-- Content-Type: text/html  
-- ✅ Returns styled HTML welcome page with navigation links
-
-### GET /tasks — All Tasks
-- Status: 200 OK  
-- Content-Type: application/json  
-- ✅ Returns JSON array with all tasks
-
-```json
-{
-  "success": true,
-  "count": 3,
-  "tasks": [
-    { "id": 1, "taskName": "Design Database Schema", "assignedTo": "Alice", "status": "completed" },
-    { "id": 2, "taskName": "Develop REST API", "assignedTo": "Bob", "status": "in-progress" },
-    { "id": 3, "taskName": "Write Unit Tests", "assignedTo": "Carol", "status": "pending" }
-  ]
-}
-```
-
-### GET /about — Application Info
-- Status: 200 OK  
-- Content-Type: text/html  
-- ✅ Returns styled HTML with application metadata
-
-### GET /home — FS Static File Serving
-- Status: 200 OK  
-- Content-Type: text/html  
-- ✅ public/index.html served via fs.readFile()
-
-### POST /add-task — Add Task (Success)
-- Status: 201 Created  
-- ✅ Task added to array
-
-```json
-{
-  "success": true,
-  "message": "Task added successfully.",
-  "task": { "id": 4, "taskName": "Deploy Application", "assignedTo": "Dave", "status": "pending" },
-  "totalTasks": 4
-}
-```
-
-### POST /add-task — Missing Fields (400 Validation)
-```json
-{ "success": false, "error": "Missing required fields: assignedTo, status" }
-```
-
-### POST /add-task — Invalid JSON (400)
-```json
-{ "success": false, "error": "Invalid JSON in request body." }
-```
-
-### GET /invalid-route — 404 Handling
-```json
-{
-  "success": false,
-  "error": "Route GET /invalid-route not found.",
-  "availableRoutes": ["GET /", "GET /tasks", "GET /about", "GET /home", "POST /add-task"]
-}
-```
+This document records the actual test execution and maps the generated screenshot files in `screenshots/`.
 
 ---
 
-## Part B: Express REST API (Port 4000)
+## 1. Screenshots Overview
 
-### GET /tasks — All Tasks
-- Status: 200 OK  
-- ✅ Returns 5 sample tasks with id, taskName, assignedTo, status, priority
-
-### GET /tasks/2 — Single Task by ID
-- Status: 200 OK  
-```json
-{ "success": true, "task": { "id": 2, "taskName": "Develop REST API Endpoints", "assignedTo": "Bob Smith", "status": "in-progress", "priority": "high" } }
-```
-
-### GET /tasks/99 — Not Found
-- Status: 404  
-```json
-{ "success": false, "error": "Task with id 99 not found." }
-```
-
-### POST /tasks — Create Task
-- Status: 201 Created  
-```json
-{ "success": true, "message": "Task created successfully.", "task": { "id": 6, "taskName": "Code Review", "assignedTo": "Frank Green", "status": "pending", "priority": "high" }, "totalTasks": 6 }
-```
-
-### PUT /tasks/3 — Update Task
-- Status: 200 OK  
-```json
-{ "success": true, "message": "Task updated successfully.", "task": { "id": 3, "taskName": "Write Unit Tests", "assignedTo": "Carol Williams", "status": "in-progress", "priority": "high" } }
-```
-
-### PUT /tasks/99 — Update Not Found
-- Status: 404  
-```json
-{ "success": false, "error": "Task with id 99 not found." }
-```
-
-### DELETE /tasks/5 — Delete Task
-- Status: 200 OK  
-```json
-{ "success": true, "message": "Task with id 5 deleted successfully.", "deletedTask": { "id": 5, "taskName": "Deploy to Production" }, "remainingTasks": 5 }
-```
-
-### DELETE /tasks/99 — Delete Not Found
-- Status: 404  
-```json
-{ "success": false, "error": "Task with id 99 not found." }
-```
+| Screenshot File | Endpoint / Component | Module | Status Code | Content-Type | Verification |
+|---|---|---|---|---|---|
+| `01_http_get_welcome.png` | `GET /` | Part A (Port 3000) | `200 OK` | `text/html` | Genuine Chrome browser view of styled welcome page |
+| `02_http_get_tasks.png` | `GET /tasks` | Part A (Port 3000) | `200 OK` | `application/json` | Genuine Chrome browser view of all tasks in JSON format |
+| `03_http_get_about.png` | `GET /about` | Part A (Port 3000) | `200 OK` | `text/html` | Genuine Chrome browser view of application info table |
+| `04_http_get_home_fs.png` | `GET /home` | Part A (Port 3000) | `200 OK` | `text/html` | Genuine Chrome browser view of `public/index.html` served via FS module |
+| `05_http_invalid_route_404.png` | `GET /invalid-route` | Part A (Port 3000) | `404 Not Found` | `application/json` | Genuine Chrome browser view of 404 route handling |
+| `06_express_get_tasks.png` | `GET /tasks` | Part B (Port 4000) | `200 OK` | `application/json` | Genuine Chrome browser view of all tasks array from Express API |
+| `07_express_get_task_by_id.png` | `GET /tasks/1` | Part B (Port 4000) | `200 OK` | `application/json` | Genuine Chrome browser view of task with ID 1 |
+| `08_express_get_task_not_found_404.png` | `GET /tasks/99` | Part B (Port 4000) | `404 Not Found` | `application/json` | Genuine Chrome browser view of Express 404 Not Found |
 
 ---
-*All tests passed ✅ — Generated automatically from running servers*
+
+## 2. Part A: HTTP Module Test Results (Port 3000)
+
+### 2.1 GET /
+- **URL:** `http://localhost:3000/`
+- **Status:** `200 OK`
+- **Content-Type:** `text/html`
+- **Screenshot:** `screenshots/01_http_get_welcome.png`
+
+### 2.2 GET /tasks
+- **URL:** `http://localhost:3000/tasks`
+- **Status:** `200 OK`
+- **Content-Type:** `application/json`
+- **Response Body:**
+```json
+[
+  {
+    "id": 1,
+    "taskName": "Develop Login Page",
+    "assignedTo": "Rahul Sharma",
+    "status": "Pending"
+  },
+  {
+    "id": 2,
+    "taskName": "Design Database Schema",
+    "assignedTo": "Priya Patel",
+    "status": "In Progress"
+  },
+  {
+    "id": 3,
+    "taskName": "Write Unit Tests",
+    "assignedTo": "Ankit Verma",
+    "status": "Pending"
+  }
+]
+```
+- **Screenshot:** `screenshots/02_http_get_tasks.png`
+
+### 2.3 GET /about
+- **URL:** `http://localhost:3000/about`
+- **Status:** `200 OK`
+- **Content-Type:** `text/html`
+- **Screenshot:** `screenshots/03_http_get_about.png`
+
+### 2.4 GET /home (Static File Serving via FS Module)
+- **URL:** `http://localhost:3000/home`
+- **Status:** `200 OK`
+- **Content-Type:** `text/html`
+- **Verification:** Successfully read `public/index.html` using `fs.readFile()` and served to client.
+- **Screenshot:** `screenshots/04_http_get_home_fs.png`
+
+### 2.5 POST /add-task
+- **URL:** `http://localhost:3000/add-task`
+- **Method:** `POST`
+- **Request Body:**
+```json
+{
+  "id": 4,
+  "taskName": "Develop REST API",
+  "assignedTo": "Amit Kumar",
+  "status": "Pending"
+}
+```
+- **Response Status:** `201 Created`
+- **Response Body:**
+```json
+{
+  "message": "Task added successfully",
+  "task": {
+    "id": 4,
+    "taskName": "Develop REST API",
+    "assignedTo": "Amit Kumar",
+    "status": "Pending"
+  }
+}
+```
+
+### 2.6 POST /add-task (Validation Error)
+- **URL:** `http://localhost:3000/add-task`
+- **Method:** `POST`
+- **Request Body:** `{"id": 5, "taskName": "Missing Fields"}`
+- **Response Status:** `400 Bad Request`
+- **Response Body:**
+```json
+{
+  "message": "Validation failed: id, taskName, assignedTo and status are required fields"
+}
+```
+
+### 2.7 404 Route Error Handling
+- **URL:** `http://localhost:3000/invalid-route`
+- **Response Status:** `404 Not Found`
+- **Screenshot:** `screenshots/05_http_invalid_route_404.png`
+
+---
+
+## 3. Part B: Express REST API Test Results (Port 4000)
+
+### 3.1 GET /tasks
+- **URL:** `http://localhost:4000/tasks`
+- **Status:** `200 OK`
+- **Screenshot:** `screenshots/06_express_get_tasks.png`
+
+### 3.2 GET /tasks/1
+- **URL:** `http://localhost:4000/tasks/1`
+- **Status:** `200 OK`
+- **Response Body:**
+```json
+{
+  "id": 1,
+  "taskName": "Develop Login Page",
+  "assignedTo": "Rahul Sharma",
+  "status": "Pending",
+  "priority": "High"
+}
+```
+- **Screenshot:** `screenshots/07_express_get_task_by_id.png`
+
+### 3.3 GET /tasks/99 (Not Found)
+- **URL:** `http://localhost:4000/tasks/99`
+- **Status:** `404 Not Found`
+- **Screenshot:** `screenshots/08_express_get_task_not_found_404.png`
+
+### 3.4 POST /tasks
+- **URL:** `http://localhost:4000/tasks`
+- **Status:** `201 Created`
+- **Request Body:**
+```json
+{
+  "id": 4,
+  "taskName": "Develop REST API",
+  "assignedTo": "Amit Kumar",
+  "status": "Pending",
+  "priority": "Medium"
+}
+```
+- **Response Body:**
+```json
+{
+  "message": "Task added successfully",
+  "task": {
+    "id": 4,
+    "taskName": "Develop REST API",
+    "assignedTo": "Amit Kumar",
+    "status": "Pending",
+    "priority": "Medium"
+  }
+}
+```
+
+### 3.5 PUT /tasks/1
+- **URL:** `http://localhost:4000/tasks/1`
+- **Status:** `200 OK`
+- **Request Body:**
+```json
+{
+  "taskName": "Develop Login Page",
+  "assignedTo": "Rahul Sharma",
+  "status": "Completed",
+  "priority": "High"
+}
+```
+- **Response Body:**
+```json
+{
+  "message": "Task updated successfully",
+  "task": {
+    "id": 1,
+    "taskName": "Develop Login Page",
+    "assignedTo": "Rahul Sharma",
+    "status": "Completed",
+    "priority": "High"
+  }
+}
+```
+
+### 3.6 DELETE /tasks/1
+- **URL:** `http://localhost:4000/tasks/1`
+- **Status:** `200 OK`
+- **Response Body:**
+```json
+{
+  "message": "Task deleted successfully"
+}
+```

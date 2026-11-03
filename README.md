@@ -1,82 +1,149 @@
-# MT1 Lab Examination — Employee Task Manager
+# MT1 Lab Examination — Employee Task Management Web Application
 
-A Node.js project implementing employee task management using both the built-in HTTP module and Express.js.
+Subject: Full Stack Development – Node.js Lab Examination  
+Technology: Node.js, Built-in HTTP Module, Built-in FS Module, Express.js  
+Database: Not Required (JavaScript Arrays in Memory)  
+Module System: ES Modules (`import` / `export`)  
 
-## Project Structure
+---
+
+## 1. Project Overview
+
+This project implements an Employee Task Management application in two independent modules:
+- **Part A (`httpServer.js`)**: Runs on **Port 3000** using built-in `http` and `fs` modules (no Express).
+- **Part B (`expressApp.js`)**: Runs on **Port 4000** using `express` to implement a complete REST API with CRUD operations.
+
+---
+
+## 2. Project Structure
 
 ```
 MT1-LABEXAM/
-├── package.json          # Project config (ES Modules, Express dependency)
-├── httpServer.js         # Part A: Built-in HTTP module server (Port 3000)
-├── expressApp.js         # Part B: Express REST API (Port 4000)
+│
+├── package.json
+├── package-lock.json
+├── .gitignore
+├── README.md
+├── httpServer.js
+├── expressApp.js
 ├── public/
-│   └── index.html        # Static HTML page served via FS module
-└── screenshots/          # Evidence screenshots and test results
+│   └── index.html
+└── screenshots/
+    ├── 01_http_get_welcome.png
+    ├── 02_http_get_tasks.png
+    ├── 03_http_get_about.png
+    ├── 04_http_get_home_fs.png
+    ├── 05_http_invalid_route_404.png
+    ├── 06_express_get_tasks.png
+    ├── 07_express_get_task_by_id.png
+    ├── 08_express_get_task_not_found_404.png
+    └── test-results.md
 ```
 
-## Technologies
+---
 
-- **Node.js** v24+ with **ES Modules** (`import`/`export`)
-- **Built-in `http` module** — Part A (Port 3000)
-- **Built-in `fs` module** — Serve static HTML file
-- **Express.js** — Part B REST API (Port 4000)
-- **JavaScript Arrays** — In-memory data store (no database)
+## 3. Running the Application
 
-## Running the Servers
-
+### Step 1: Start HTTP Server (Part A)
 ```bash
-# Part A — HTTP Server on port 3000
 node httpServer.js
+```
+**Expected Output:**
+```
+HTTP Server running at http://localhost:3000
+```
 
-# Part B — Express Server on port 4000
+**Routes:**
+- `GET http://localhost:3000/` — Welcome message in HTML format
+- `GET http://localhost:3000/tasks` — List of employee tasks in JSON format
+- `GET http://localhost:3000/about` — Employee task management application information
+- `GET http://localhost:3000/home` — Serve `index.html` from public directory using FS module
+- `POST http://localhost:3000/add-task` — Add a new task (validates `id`, `taskName`, `assignedTo`, `status`)
+
+### Step 2: Start Express Application (Part B)
+```bash
 node expressApp.js
 ```
+**Expected Output:**
+```
+Express Server running at http://localhost:4000
+```
 
-## Part A: HTTP Server Routes (Port 3000)
+**REST API Endpoints:**
+- `GET /tasks` — Retrieve all employee tasks
+- `GET /tasks/:id` — Retrieve a task by ID (returns 404 if not found)
+- `POST /tasks` — Add a new task (returns HTTP 201)
+- `PUT /tasks/:id` — Update task details
+- `DELETE /tasks/:id` — Delete a task
 
-| Method | Route       | Description                             |
-|--------|-------------|----------------------------------------|
-| GET    | `/`         | Welcome page (HTML)                    |
-| GET    | `/tasks`    | All tasks (JSON)                       |
-| GET    | `/about`    | Application info (HTML)                |
-| GET    | `/home`     | `public/index.html` via FS module      |
-| POST   | `/add-task` | Add a task (JSON body required)        |
+---
 
-### POST /add-task Body (required fields)
+## 4. API Testing Using EchoAPI (Part B)
+
+| Method | URL | Description / Expected Result |
+|---|---|---|
+| `GET` | `http://localhost:4000/tasks` | Display all tasks |
+| `GET` | `http://localhost:4000/tasks/1` | Display task with ID 1 |
+| `POST` | `http://localhost:4000/tasks` | Add a new task (HTTP 201) |
+| `PUT` | `http://localhost:4000/tasks/1` | Update task details |
+| `DELETE` | `http://localhost:4000/tasks/1` | Delete a task |
+
+### Sample POST Request
+**URL:** `http://localhost:4000/tasks`  
+**Body (raw JSON):**
 ```json
 {
   "id": 4,
-  "taskName": "Deploy Application",
-  "assignedTo": "Dave",
-  "status": "pending"
+  "taskName": "Develop REST API",
+  "assignedTo": "Amit Kumar",
+  "status": "Pending",
+  "priority": "Medium"
 }
 ```
-
-## Part B: Express REST API Routes (Port 4000)
-
-| Method | Route         | Description              | Status Code |
-|--------|---------------|--------------------------|-------------|
-| GET    | `/tasks`      | Get all tasks            | 200         |
-| GET    | `/tasks/:id`  | Get task by ID           | 200 / 404   |
-| POST   | `/tasks`      | Create new task          | 201         |
-| PUT    | `/tasks/:id`  | Update existing task     | 200 / 404   |
-| DELETE | `/tasks/:id`  | Delete task by ID        | 200 / 404   |
-
-### POST/PUT /tasks Body
+**Expected Response:**
 ```json
 {
-  "taskName": "Code Review",
-  "assignedTo": "Frank Green",
-  "status": "pending",
-  "priority": "high"
+  "message": "Task added successfully",
+  "task": {
+    "id": 4,
+    "taskName": "Develop REST API",
+    "assignedTo": "Amit Kumar",
+    "status": "Pending",
+    "priority": "Medium"
+  }
 }
 ```
-Valid `status` values: `pending`, `in-progress`, `completed`  
-Valid `priority` values: `low`, `medium`, `high`
 
-## Error Handling
+### Sample PUT Request
+**URL:** `http://localhost:4000/tasks/1`  
+**Body (raw JSON):**
+```json
+{
+  "taskName": "Develop Login Page",
+  "assignedTo": "Rahul Sharma",
+  "status": "Completed",
+  "priority": "High"
+}
+```
+**Expected Response:**
+```json
+{
+  "message": "Task updated successfully",
+  "task": {
+    "id": 1,
+    "taskName": "Develop Login Page",
+    "assignedTo": "Rahul Sharma",
+    "status": "Completed",
+    "priority": "High"
+  }
+}
+```
 
-- **400** — Missing fields, invalid JSON, bad input
-- **404** — Route or task not found
-- **409** — Duplicate task ID (HTTP server)
-- **500** — File read errors
+### Sample DELETE Request
+**URL:** `http://localhost:4000/tasks/1`  
+**Expected Response:**
+```json
+{
+  "message": "Task deleted successfully"
+}
+```

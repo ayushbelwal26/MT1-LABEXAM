@@ -26,5 +26,8 @@
   "homepage": "https://github.com/ayushbelwal26/MT1-LABEXAM#readme",
   "dependencies": {
     "express": "^4.22.3"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.16.0"
   }
 }

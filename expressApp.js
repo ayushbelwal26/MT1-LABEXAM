@@ -1,267 +1,176 @@
-// expressApp.js — Part B: Express REST API (Port 4000)
+// expressApp.js — Part B: Employee Task Management REST API Using Express.js (Port 4000)
 // MT1 Lab Examination
 
 import express from 'express';
 
 const app = express();
 
-// ── Middleware ─────────────────────────────────────────────────────────────
+// ── B1. Configure Middleware ───────────────────────────────────────────────
 
 app.use(express.json());
 
-// Request logger middleware
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  next();
-});
+// ── B1 & B3. Initialize Sample Task Array (No Database) ───────────────────
 
-// ── Sample Data ────────────────────────────────────────────────────────────
-
-// In-memory array — no database
 let tasks = [
   {
     id: 1,
-    taskName: 'Design System Architecture',
-    assignedTo: 'Alice Johnson',
-    status: 'completed',
-    priority: 'high',
+    taskName: 'Develop Login Page',
+    assignedTo: 'Rahul Sharma',
+    status: 'Pending',
+    priority: 'High'
   },
   {
     id: 2,
-    taskName: 'Develop REST API Endpoints',
-    assignedTo: 'Bob Smith',
-    status: 'in-progress',
-    priority: 'high',
+    taskName: 'Design Database Schema',
+    assignedTo: 'Priya Patel',
+    status: 'In Progress',
+    priority: 'Medium'
   },
   {
     id: 3,
     taskName: 'Write Unit Tests',
-    assignedTo: 'Carol Williams',
-    status: 'pending',
-    priority: 'medium',
-  },
-  {
-    id: 4,
-    taskName: 'Set Up CI/CD Pipeline',
-    assignedTo: 'David Lee',
-    status: 'pending',
-    priority: 'medium',
-  },
-  {
-    id: 5,
-    taskName: 'Deploy to Production',
-    assignedTo: 'Eve Martinez',
-    status: 'pending',
-    priority: 'low',
-  },
+    assignedTo: 'Ankit Verma',
+    status: 'Pending',
+    priority: 'Low'
+  }
 ];
 
-// Auto-increment helper
-let nextId = tasks.length + 1;
+// Helper to determine next available ID
+let nextId = 4;
 
-// ── Validation Helper ──────────────────────────────────────────────────────
+// ── B2. CRUD Operations ───────────────────────────────────────────────────
 
-const VALID_STATUSES   = ['pending', 'in-progress', 'completed'];
-const VALID_PRIORITIES = ['low', 'medium', 'high'];
-
-function validateTaskFields(body, requireAll = true) {
-  const errors = [];
-  const { taskName, assignedTo, status, priority } = body;
-
-  if (requireAll) {
-    if (!taskName)   errors.push('taskName is required');
-    if (!assignedTo) errors.push('assignedTo is required');
-    if (!status)     errors.push('status is required');
-    if (!priority)   errors.push('priority is required');
-  }
-
-  if (status && !VALID_STATUSES.includes(status)) {
-    errors.push(`status must be one of: ${VALID_STATUSES.join(', ')}`);
-  }
-  if (priority && !VALID_PRIORITIES.includes(priority)) {
-    errors.push(`priority must be one of: ${VALID_PRIORITIES.join(', ')}`);
-  }
-
-  return errors;
-}
-
-// ── Routes ─────────────────────────────────────────────────────────────────
-
-// GET /tasks — Retrieve all tasks
+// GET /tasks — Retrieve all employee tasks
 app.get('/tasks', (req, res) => {
-  res.status(200).json({
-    success: true,
-    count: tasks.length,
-    tasks,
-  });
+  res.status(200).json(tasks);
 });
 
 // GET /tasks/:id — Retrieve a task by ID
 app.get('/tasks/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const taskId = parseInt(req.params.id, 10);
 
-  if (isNaN(id)) {
-    return res.status(400).json({ success: false, error: 'ID must be a number.' });
+  if (isNaN(taskId)) {
+    return res.status(400).json({ message: 'Task ID must be a valid number' });
   }
 
-  const task = tasks.find(t => t.id === id);
+  const task = tasks.find(t => t.id === taskId);
   if (!task) {
-    return res.status(404).json({
-      success: false,
-      error: `Task with id ${id} not found.`,
-    });
+    return res.status(404).json({ message: `Task with ID ${taskId} not found` });
   }
 
-  res.status(200).json({ success: true, task });
+  res.status(200).json(task);
 });
 
-// POST /tasks — Create a new task (HTTP 201)
+// POST /tasks — Add a new task (HTTP 201)
 app.post('/tasks', (req, res) => {
-  const body = req.body;
+  const { id, taskName, assignedTo, status, priority } = req.body;
 
-  if (!body || Object.keys(body).length === 0) {
+  // Validation
+  if (!taskName || !assignedTo || !status || !priority) {
     return res.status(400).json({
-      success: false,
-      error: 'Request body is required.',
+      message: 'Validation failed: taskName, assignedTo, status and priority are required fields'
     });
   }
 
-  const errors = validateTaskFields(body, true);
-  if (errors.length > 0) {
-    return res.status(400).json({ success: false, errors });
-  }
+  // Use provided ID or generate a new one
+  const taskId = id !== undefined ? Number(id) : nextId++;
 
-  // Use client-provided id if given, otherwise auto-increment
-  const taskId = body.id !== undefined ? body.id : nextId++;
-
-  // Check duplicate id
-  if (tasks.find(t => t.id == taskId)) {
-    return res.status(409).json({ success: false, error: `Task with id ${taskId} already exists.` });
+  // Check for duplicate ID
+  const exists = tasks.find(t => t.id === taskId);
+  if (exists) {
+    return res.status(409).json({ message: `Task with ID ${taskId} already exists` });
   }
 
   const newTask = {
-    id:         taskId,
-    taskName:   body.taskName,
-    assignedTo: body.assignedTo,
-    status:     body.status,
-    priority:   body.priority,
+    id: taskId,
+    taskName,
+    assignedTo,
+    status,
+    priority
   };
 
   tasks.push(newTask);
 
   res.status(201).json({
     message: 'Task added successfully',
-    task: newTask,
+    task: newTask
   });
 });
 
-// PUT /tasks/:id — Update an existing task
+// PUT /tasks/:id — Update task details
 app.put('/tasks/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const taskId = parseInt(req.params.id, 10);
 
-  if (isNaN(id)) {
-    return res.status(400).json({ success: false, error: 'ID must be a number.' });
+  if (isNaN(taskId)) {
+    return res.status(400).json({ message: 'Task ID must be a valid number' });
   }
 
-  const index = tasks.findIndex(t => t.id === id);
+  const index = tasks.findIndex(t => t.id === taskId);
   if (index === -1) {
-    return res.status(404).json({
-      success: false,
-      error: `Task with id ${id} not found.`,
-    });
+    return res.status(404).json({ message: `Task with ID ${taskId} not found` });
   }
 
-  const body = req.body;
-  if (!body || Object.keys(body).length === 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Request body with at least one field is required.',
-    });
+  const { taskName, assignedTo, status, priority } = req.body;
+
+  if (!taskName && !assignedTo && !status && !priority) {
+    return res.status(400).json({ message: 'At least one field is required to update' });
   }
 
-  const errors = validateTaskFields(body, false);
-  if (errors.length > 0) {
-    return res.status(400).json({ success: false, errors });
-  }
-
-  // Merge updated fields
-  const updatedTask = {
+  // Update existing task record
+  tasks[index] = {
     ...tasks[index],
-    ...(body.taskName   && { taskName:   body.taskName }),
-    ...(body.assignedTo && { assignedTo: body.assignedTo }),
-    ...(body.status     && { status:     body.status }),
-    ...(body.priority   && { priority:   body.priority }),
+    ...(taskName !== undefined && { taskName }),
+    ...(assignedTo !== undefined && { assignedTo }),
+    ...(status !== undefined && { status }),
+    ...(priority !== undefined && { priority })
   };
 
-  tasks[index] = updatedTask;
-
   res.status(200).json({
-    success: true,
-    message: 'Task updated successfully.',
-    task: updatedTask,
+    message: 'Task updated successfully',
+    task: tasks[index]
   });
 });
 
 // DELETE /tasks/:id — Delete a task
 app.delete('/tasks/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const taskId = parseInt(req.params.id, 10);
 
-  if (isNaN(id)) {
-    return res.status(400).json({ success: false, error: 'ID must be a number.' });
+  if (isNaN(taskId)) {
+    return res.status(400).json({ message: 'Task ID must be a valid number' });
   }
 
-  const index = tasks.findIndex(t => t.id === id);
+  const index = tasks.findIndex(t => t.id === taskId);
   if (index === -1) {
-    return res.status(404).json({
-      success: false,
-      error: `Task with id ${id} not found.`,
-    });
+    return res.status(404).json({ message: `Task with ID ${taskId} not found` });
   }
 
-  const deleted = tasks.splice(index, 1)[0];
+  tasks.splice(index, 1);
 
   res.status(200).json({
-    success: true,
-    message: `Task with id ${id} deleted successfully.`,
-    deletedTask: deleted,
-    remainingTasks: tasks.length,
+    message: 'Task deleted successfully'
   });
 });
 
-// ── 404 Handler ────────────────────────────────────────────────────────────
+// ── Error Handling for Invalid Routes ──────────────────────────────────────
 
 app.use((req, res) => {
   res.status(404).json({
-    success: false,
-    error: `Route ${req.method} ${req.originalUrl} not found.`,
-    availableRoutes: [
-      'GET  /tasks',
-      'GET  /tasks/:id',
-      'POST /tasks',
-      'PUT  /tasks/:id',
-      'DELETE /tasks/:id',
-    ],
+    message: `Cannot ${req.method} ${req.originalUrl}`
   });
 });
 
-// ── Error Handler ──────────────────────────────────────────────────────────
+// ── JSON Parse Error Middleware ────────────────────────────────────────────
 
-// Handle invalid JSON bodies sent by clients
 app.use((err, req, res, next) => {
-  if (err.type === 'entity.parse.failed') {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid JSON in request body.',
-    });
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ message: 'Invalid JSON payload' });
   }
-  console.error(err);
-  res.status(500).json({ success: false, error: 'Internal Server Error.' });
+  next();
 });
 
-// ── Start Server ───────────────────────────────────────────────────────────
+// ── B1. Configure Application to Listen on Port 4000 ───────────────────────
 
 const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Express Server running at http://localhost:${PORT}`);
-  console.log('   Routes: GET /tasks, GET /tasks/:id, POST /tasks, PUT /tasks/:id, DELETE /tasks/:id');
 });

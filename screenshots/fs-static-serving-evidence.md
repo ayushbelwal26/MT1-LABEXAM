@@ -43,3 +43,4 @@ function handleHome(req, res) {
 | File found         | 200       | HTML served successfully            |
 | File not found     | 404       | ENOENT error — file missing         |
 | Other read error   | 500       | Internal server error               |
+

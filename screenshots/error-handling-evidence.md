@@ -63,3 +63,4 @@ If `public/index.html` is missing:
 <h1>404 — File Not Found</h1>
 <p>public/index.html does not exist.</p>
 ```
+
