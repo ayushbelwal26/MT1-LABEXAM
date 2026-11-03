@@ -249,6 +249,6 @@ const server = http.createServer(async (req, res) => {
 
 const PORT = 3000;
 server.listen(PORT, () => {
-  console.log(`✅ HTTP Server running on http://localhost:${PORT}`);
+  console.log(`HTTP Server running at http://localhost:${PORT}`);
   console.log('   Routes: GET /, /tasks, /about, /home | POST /add-task');
 });

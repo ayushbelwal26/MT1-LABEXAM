@@ -131,8 +131,16 @@ app.post('/tasks', (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
+  // Use client-provided id if given, otherwise auto-increment
+  const taskId = body.id !== undefined ? body.id : nextId++;
+
+  // Check duplicate id
+  if (tasks.find(t => t.id == taskId)) {
+    return res.status(409).json({ success: false, error: `Task with id ${taskId} already exists.` });
+  }
+
   const newTask = {
-    id: nextId++,
+    id:         taskId,
     taskName:   body.taskName,
     assignedTo: body.assignedTo,
     status:     body.status,
@@ -142,10 +150,8 @@ app.post('/tasks', (req, res) => {
   tasks.push(newTask);
 
   res.status(201).json({
-    success: true,
-    message: 'Task created successfully.',
+    message: 'Task added successfully',
     task: newTask,
-    totalTasks: tasks.length,
   });
 });
 
@@ -256,6 +262,6 @@ app.use((err, req, res, next) => {
 
 const PORT = 4000;
 app.listen(PORT, () => {
-  console.log(`✅ Express Server running on http://localhost:${PORT}`);
+  console.log(`Express Server running at http://localhost:${PORT}`);
   console.log('   Routes: GET /tasks, GET /tasks/:id, POST /tasks, PUT /tasks/:id, DELETE /tasks/:id');
 });
