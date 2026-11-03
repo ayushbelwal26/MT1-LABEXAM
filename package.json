@@ -1,0 +1,30 @@
+{
+  "name": "mt1-labexam",
+  "version": "1.0.0",
+  "description": "MT1 Lab Examination - Node.js HTTP and Express REST API",
+  "main": "httpServer.js",
+  "type": "module",
+  "scripts": {
+    "start:http": "node httpServer.js",
+    "start:express": "node expressApp.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayushbelwal26/MT1-LABEXAM.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "rest-api",
+    "http-module"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ayushbelwal26/MT1-LABEXAM/issues"
+  },
+  "homepage": "https://github.com/ayushbelwal26/MT1-LABEXAM#readme",
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}
