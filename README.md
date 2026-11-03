@@ -29,15 +29,18 @@ MT1-LABEXAM/
 ├── public/
 │   └── index.html
 └── screenshots/
-    ├── 01_http_get_welcome.png
-    ├── 02_http_get_tasks.png
-    ├── 03_http_get_about.png
-    ├── 04_http_get_home_fs.png
-    ├── 05_http_invalid_route_404.png
-    ├── 06_express_get_tasks.png
-    ├── 07_express_get_task_by_id.png
-    ├── 08_express_get_task_not_found_404.png
-    └── test-results.md
+    ├── Part-A/
+    │   ├── 01_http_get_welcome.png
+    │   ├── 02_http_get_tasks.png
+    │   ├── 03_http_get_about.png
+    │   ├── 04_http_get_home_fs.png
+    │   └── 05_http_invalid_route_404.png
+    └── Part-B/
+        ├── 01_echoapi_get_all_tasks.jpg
+        ├── 02_echoapi_get_task_by_id.jpg
+        ├── 03_echoapi_post_task.jpg
+        ├── 04_echoapi_put_task.jpg
+        └── 05_echoapi_delete_task.jpg
 ```
 
 ---
